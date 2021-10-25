@@ -3,8 +3,7 @@ require "rails_helper"
 describe CampaignsController, type: :controller do
   describe "#show" do
     it "renders SHOW template" do
-      user = User.create!(email: Faker::Internet.email)
-      campaign = user.campaigns.create!(name: Faker::Company)
+      campaign = create(:campaign)
 
       expect(get :show, params: { id: campaign.id }).to render_template :show
     end
@@ -20,7 +19,7 @@ describe CampaignsController, type: :controller do
     end
 
     context "with valid params" do
-      let(:user) { User.create!(email: Faker::Internet.email) }
+      let(:user) { create(:user) }
 
       it "should create a campaign" do
         campaign_name = Faker::Company.name
@@ -113,7 +112,7 @@ describe CampaignsController, type: :controller do
                     criteria_type: nested_criteria_type,
                     nested_criteria_attributes: [
                       {
-                        criteria_type: "device",
+                        criteria_type: criteria_type,
                         operand: operand,
                       }
                     ]
@@ -140,11 +139,9 @@ describe CampaignsController, type: :controller do
   end
 
   describe "#update" do
-    let(:user) { User.create!(email: Faker::Internet.email) }
-    let(:campaign) { user.campaigns.create(name: Faker::Company.name) }
-
     context "with invalid params" do
       it "renders EDIT template" do
+        campaign = create(:campaign)
         params = { id: campaign.id, campaign: { user_id: nil } }
 
         expect(put :update, params: params).to render_template :edit
@@ -153,6 +150,7 @@ describe CampaignsController, type: :controller do
 
     context "with valid params" do
       it "should update a campaign" do
+        campaign = create(:campaign)
         updated_campaign_name = Faker::Company.name
         params = {
           id: campaign.id,
@@ -167,7 +165,8 @@ describe CampaignsController, type: :controller do
       end
 
       it "should update an asset" do
-        asset = campaign.assets.create!(name: Faker::Company.buzzword)
+        campaign = create(:campaign, :with_asset)
+        asset = campaign.assets.first
         updated_asset_name = Faker::Company.buzzword
         params = {
           id: campaign.id,
@@ -183,13 +182,9 @@ describe CampaignsController, type: :controller do
       end
 
       it "should update criteria for an asset" do
-        asset = campaign.assets.create!(name: Faker::Company.buzzword)
-        criteria = asset.criteria.create!(
-          order: 1,
-          image: Faker::Company.logo,
-          operand: Criterium::IPHONE,
-          criteria_type: "device",
-        )
+        campaign = create(:campaign, :with_asset_and_criteria)
+        asset = campaign.assets.first
+        criteria = asset.criteria.first
         new_order = 5
         new_image = Faker::Company.logo
         new_operand = Criterium::ANDROID
@@ -224,17 +219,10 @@ describe CampaignsController, type: :controller do
       end
 
       it "should update nested criteria for criteria" do
-        asset = campaign.assets.create!(name: Faker::Company.buzzword)
-        criteria = asset.criteria.create!(
-          order: 1,
-          image: Faker::Company.logo,
-          criteria_type: "nested",
-        )
-        nested_criteria = criteria.nested_criteria.create!(
-          operand: Criterium::IPHONE,
-          criteria_type: "device",
-        )
-
+        campaign = create(:campaign, :with_asset_and_nested_criteria)
+        asset = campaign.assets.first
+        criteria = asset.criteria.first
+        nested_criteria = criteria.nested_criteria.first
         new_operand = Criterium::ANDROID
 
         params = {
