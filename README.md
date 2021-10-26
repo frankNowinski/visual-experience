@@ -1,24 +1,27 @@
-# README
+## About
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Visual Experience is a simple Rails app that loosely mimics Movable Ink's Visual Experiences platform.
 
-Things you may want to cover:
+## Getting Started
 
-* Ruby version
+First, clone the repo to your local computer.
 
-* System dependencies
+```
+git clone https://github.com/frankNowinski/visual-experience.git
+```
 
-* Configuration
+Then, `cd` into the `visual-experience` directory and run `bundle`.
 
-* Database creation
+Now you can create the `db`, run the migrations and populate the `db` with seed data:
 
-* Database initialization
+```
+bundle exec rake db:create
+```
 
-* How to run the test suite
+```
+bundle exec rake db:migrate
+```
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```
+bundle exec rake db:seed
+```
