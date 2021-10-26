@@ -23,6 +23,17 @@ class CampaignsController < ApplicationController
     end
   end
 
+  def duplicate
+    campaign = Campaign.find(params[:campaign_id])
+    dup_campaign = campaign.duplicate
+
+    if dup_campaign.save
+      redirect_to dup_campaign
+    else
+      redirect_to campaign
+    end
+  end
+
   private
 
   def campaign_params

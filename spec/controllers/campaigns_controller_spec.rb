@@ -256,4 +256,26 @@ describe CampaignsController, type: :controller do
       end
     end
   end
+
+  describe "#duplicate" do
+    let(:campaign) { create(:campaign) }
+
+    subject { post :duplicate, params: { campaign_id: campaign.id } }
+
+    context "when the campaign is NOT duplicated" do
+      it "redirects to the SHOW action with the original campaign" do
+        allow(Campaign).to receive(:find).and_return(campaign)
+        allow(campaign).to receive(:duplicate).and_return(double(save: false))
+
+        expect(subject).to redirect_to campaign_path(campaign)
+      end
+    end
+
+    context "when the campaign is duplicated" do
+      it "redirects to the SHOW action with the duplicated campaign" do
+        user = campaign.user
+        expect(subject).to redirect_to campaign_path(user.campaigns.last)
+      end
+    end
+  end
 end
