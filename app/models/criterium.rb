@@ -18,4 +18,6 @@ class Criterium < ApplicationRecord
   validates_presence_of :criteria_type
   validates_inclusion_of :operand, in: [*OPERANDS], allow_nil: true
   validates :order, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
+
+  accepts_nested_attributes_for :nested_criteria
 end

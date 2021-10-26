@@ -1,3 +1,5 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  resources :campaigns, only: [:show, :new, :create, :edit, :update] do
+    resources :assets, only: [:show, :new, :create, :edit, :update]
+  end
 end

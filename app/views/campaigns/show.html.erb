@@ -1,0 +1,35 @@
+<h2>Campaign <%= @campaign.name %></h2>
+
+<p>Created By: <%= @campaign.user.email %></p>
+
+<p>Created On: <%= @campaign.created_at.strftime("%F") %></p>
+
+<h3>Assets</h3>
+
+<ul>
+  <% @campaign.assets.each do |asset| %>
+    <li>Name: <%= asset.name.capitalize %><li>
+      <p>Criteria:</p>
+        <ul>
+          <% asset.criteria.each do |criterium| %>
+            <% if criterium.criteria_type == "nested" %>
+              <br><img src="<%= criterium.image %>" width="150" height="50" alt="criteria-image">
+              <li>Type: <%= criterium.criteria_type %></li>
+              <li>Order: <%= criterium.order %></li>
+              <ul>
+                <% criterium.nested_criteria.each do |c|  %>
+                  <li>Type: <%= c.criteria_type %></li>
+                  <li>Operand: <%= c.operand %></li><br>
+                <% end %>
+              </ul>
+            <% else %>
+              <br><img src="<%= criterium.image %>" width="150" height="50" alt="criteria-image">
+              <li>Type: <%= criterium.criteria_type %></li>
+              <li>Operand: <%= criterium.operand %></li>
+              <li>Order: <%= criterium.order %></li>
+            <% end %>
+            <br />
+          <% end %>
+        </ul>
+  <% end %>
+</ul>
